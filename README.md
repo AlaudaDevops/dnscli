@@ -46,10 +46,6 @@ Add one or more custom domain prefixes:
   --domains="test-gitlab,test-jenkins"
 ```
 
-This creates:
-- `test-gitlab.alaudatech.net` → `123.45.67.89`
-- `test-jenkins.alaudatech.net` → `123.45.67.89`
-
 **Output:**
 ```
 Successfully added DNS record: test-gitlab.alaudatech.net -> 123.45.67.89
@@ -74,52 +70,7 @@ Successfully deleted DNS record: test-gitlab.alaudatech.net (ID: 123456789)
 Successfully deleted DNS record: test-jenkins.alaudatech.net (ID: 123456790)
 ```
 
-#### 3. Add DNS Records (Ares Integration Mode)
-
-Automatically generate and add DNS records for all DevOps tools:
-
-```bash
-./dnscli add-ares \
-  --access-key-id="YOUR_ACCESS_KEY_ID" \
-  --access-key-secret="YOUR_ACCESS_KEY_SECRET" \
-  --ip="123.45.67.89"
-```
-
-This creates 6 DNS records:
-- `123-45-67-89-jenkins.alaudatech.net` → `123.45.67.89`
-- `123-45-67-89-gitlab.alaudatech.net` → `123.45.67.89`
-- `123-45-67-89-sonar.alaudatech.net` → `123.45.67.89`
-- `123-45-67-89-harbor.alaudatech.net` → `123.45.67.89`
-- `123-45-67-89-katanomi.alaudatech.net` → `123.45.67.89`
-- `123-45-67-89-nexus.alaudatech.net` → `123.45.67.89`
-
-**Output:**
-```
-Adding 6 DNS records for Ares integration...
-Successfully added DNS record: 123-45-67-89-jenkins.alaudatech.net -> 123.45.67.89
-Successfully added DNS record: 123-45-67-89-gitlab.alaudatech.net -> 123.45.67.89
-...
-```
-
-#### 4. Delete DNS Records (Ares Integration Mode)
-
-Delete all auto-generated DevOps tool DNS records:
-
-```bash
-./dnscli delete-ares \
-  --access-key-id="YOUR_ACCESS_KEY_ID" \
-  --access-key-secret="YOUR_ACCESS_KEY_SECRET" \
-  --ip="123.45.67.89"
-```
-
-**Output:**
-```
-Deleting 6 DNS records for Ares integration...
-Successfully deleted DNS record: 123-45-67-89-jenkins.alaudatech.net (ID: 123456789)
-...
-```
-
-#### 5. List All DNS Records
+#### 3. List All DNS Records
 
 List all DNS records under the base domain:
 
@@ -141,7 +92,7 @@ app1.alaudatech.net                     AAAA       2001:db8::1          ENABLE
 Total: 3 record(s)
 ```
 
-#### 6. Cleanup DNS Records
+#### 4. Cleanup DNS Records
 
 Cleanup (delete) specific DNS records:
 
