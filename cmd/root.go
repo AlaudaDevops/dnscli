@@ -37,20 +37,6 @@ var deleteCmd = &cobra.Command{
 	RunE:  runDelete,
 }
 
-var addAresCmd = &cobra.Command{
-	Use:   "add-ares",
-	Short: "Add DNS records for Ares integration",
-	Long:  `Automatically generate and add DNS records for common DevOps tools (jenkins, gitlab, sonar, harbor, katanomi, nexus) based on the IP address.`,
-	RunE:  runAddAres,
-}
-
-var deleteAresCmd = &cobra.Command{
-	Use:   "delete-ares",
-	Short: "Delete DNS records for Ares integration",
-	Long:  `Automatically generate and delete DNS records for common DevOps tools based on the IP address.`,
-	RunE:  runDeleteAres,
-}
-
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all DNS records",
@@ -71,7 +57,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&accessKeySecret, "access-key-secret", "", "Alibaba Cloud Access Key Secret (required)")
 	rootCmd.PersistentFlags().StringVar(&baseDomain, "base-domain", "alaudatech.net", "Base domain name")
 
-	// IP is only required for add/delete/add-ares/delete-ares commands
+	// IP is only required for add/delete commands
 	rootCmd.PersistentFlags().StringVar(&ipAddr, "ip", "", "IP address to map")
 
 	rootCmd.MarkPersistentFlagRequired("access-key-id")
@@ -86,10 +72,6 @@ func init() {
 	deleteCmd.MarkFlagRequired("domains")
 	deleteCmd.MarkFlagRequired("ip")
 
-	// Add-ares/Delete-ares require IP
-	addAresCmd.MarkFlagRequired("ip")
-	deleteAresCmd.MarkFlagRequired("ip")
-
 	// Cleanup specific flags
 	cleanupCmd.Flags().StringSliceVar(&domainPrefixes, "domains", []string{}, "Domain prefixes to cleanup (comma-separated)")
 	cleanupCmd.MarkFlagRequired("domains")
@@ -97,8 +79,6 @@ func init() {
 	// Add commands to root
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(deleteCmd)
-	rootCmd.AddCommand(addAresCmd)
-	rootCmd.AddCommand(deleteAresCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(cleanupCmd)
 }
@@ -140,40 +120,6 @@ func runDelete(cmd *cobra.Command, args []string) error {
 	}
 
 	for _, prefix := range domainPrefixes {
-		if err := client.DeleteDomainRecord(prefix, ipAddr); err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to delete %s: %v\n", prefix, err)
-		}
-	}
-	return nil
-}
-
-func runAddAres(cmd *cobra.Command, args []string) error {
-	client, err := createClient()
-	if err != nil {
-		return err
-	}
-
-	domains := dns.GenerateToolDomains(ipAddr)
-	fmt.Printf("Adding %d DNS records for Ares integration...\n", len(domains))
-
-	for _, prefix := range domains {
-		if err := client.AddDomainRecord(prefix, ipAddr); err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to add %s: %v\n", prefix, err)
-		}
-	}
-	return nil
-}
-
-func runDeleteAres(cmd *cobra.Command, args []string) error {
-	client, err := createClient()
-	if err != nil {
-		return err
-	}
-
-	domains := dns.GenerateToolDomains(ipAddr)
-	fmt.Printf("Deleting %d DNS records for Ares integration...\n", len(domains))
-
-	for _, prefix := range domains {
 		if err := client.DeleteDomainRecord(prefix, ipAddr); err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to delete %s: %v\n", prefix, err)
 		}

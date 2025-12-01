@@ -236,32 +236,3 @@ type DomainRecord struct {
 	Value  string
 	Status string
 }
-
-// GenerateToolDomains generates domain names for common DevOps tools based on IP
-func GenerateToolDomains(ipAddr string) []string {
-	tools := []string{"jenkins", "gitlab", "sonar", "harbor", "katanomi", "nexus"}
-	// Replace : and . with - in IP address
-	name := ipAddr
-	name = replaceAll(name, ":", "-")
-	name = replaceAll(name, ".", "-")
-
-	var domains []string
-	for _, tool := range tools {
-		domains = append(domains, fmt.Sprintf("%s-%s", name, tool))
-	}
-	return domains
-}
-
-// replaceAll is a helper function to replace all occurrences
-func replaceAll(s, old, new string) string {
-	result := ""
-	for i := 0; i < len(s); i++ {
-		if i <= len(s)-len(old) && s[i:i+len(old)] == old {
-			result += new
-			i += len(old) - 1
-		} else {
-			result += string(s[i])
-		}
-	}
-	return result
-}
